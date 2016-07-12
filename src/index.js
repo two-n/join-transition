@@ -55,14 +55,16 @@ const JoinTransition = React.createClass({
     let interpolator
     
     if (plural) {
-      const join = datajoin(this.state.value, nextProps.value, { key: this.props.identify, enterFrom, exitTo })
-      const interpolators = zip(join.before, join.after).map(([from, to]) => nextProps.interpolate(from, to, interpolate))
+      const { before, after } = datajoin(this.state.value, nextProps.value, {
+        key: this.props.identify, enterFrom, exitTo
+      })
+      const interpolators = zip(before, after).map(([from, to]) => nextProps.interpolate(from, to, interpolate))
 
       const staggerCoefficient = 1 / (1 - (this.props.stagger || 0) / newTransition.duration())
-      const staggerScale = scaleLinear().domain(this.props.orderBy ? extent(join.after, this.props.orderBy) : [0, b.length - 1])
+      const staggerScale = scaleLinear().domain(this.props.orderBy ? extent(after, this.props.orderBy) : [0, after.length - 1])
         
       interpolator = t =>
-        join.after.map((d, i) => {
+        after.map((d, i) => {
           const y = Math.min(1, Math.max(0, t * staggerCoefficient + (1 - staggerCoefficient) * staggerScale(this.props.orderBy != null ? this.props.orderBy(d) : i)))
           return { ...d, ...interpolators[i]((nextProps.ease != null ? nextProps.ease : defaultEase)(y)) }
         })
