@@ -16,7 +16,7 @@ const JoinTransition = React.createClass({
       exit: null,
       orderBy: null,
       duration: null,
-      stagger: null,
+      stagger: 0,
       ease: null,
       shouldTransition: (a, b) => a !== b,
     }
@@ -35,6 +35,7 @@ const JoinTransition = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
+    const nextValue = nextProps.value || nextProps.values
     if (typeof this.props.shouldTransition === "function" ? !this.props.shouldTransition(this.props.value, nextProps.value) : !this.props.shouldTransition) {
       return this.setValue(nextProps.value)
     }
@@ -65,7 +66,7 @@ const JoinTransition = React.createClass({
         
       interpolator = t =>
         after.map((d, i) => {
-          const y = Math.min(1, Math.max(0, t * staggerCoefficient + (1 - staggerCoefficient) * staggerScale(this.props.orderBy != null ? this.props.orderBy(d) : i)))
+          const y = Math.min(1, Math.max(0, t * staggerCoefficient + (1 - staggerCoefficient) * staggerScale(this.props.orderBy != null ? this.props.orderBy(d, i) : i)))
           return { ...d, ...interpolators[i]((nextProps.ease != null ? nextProps.ease : defaultEase)(y)) }
         })
     }
