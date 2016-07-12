@@ -80,7 +80,7 @@ const JoinTransition = React.createClass({
 
     newTransition
       .tween("value", () => t => { this.setState({ value: interpolator(t), prevValue: this.state.value }) })
-      .each("end", () => { this.setValue(nextProps.value) })
+      .on("end", () => { this.setValue(nextProps.value) })
   }
 
 })
