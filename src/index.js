@@ -2,6 +2,7 @@ import { transition } from "d3-transition"
 import { interpolate } from "d3-interpolate"
 import { scaleLinear } from "d3-scale"
 import { extent } from "d3-array"
+import { easeLinear } from "d3-ease"
 import { isEqual, zip } from "underscore"
 import React from "react"
 
@@ -40,10 +41,10 @@ const JoinTransition = React.createClass({
 
     const plural = Array.isArray(nextProps.value)
 
-    const newTransition = transition("transition")
+    const newTransition = transition(`JoinTransition-${Date.now()}`)
     const defaultEase = newTransition.ease()
     if (nextProps.duration != null) newTransition.duration(nextProps.duration)
-    if (plural) newTransition.ease("linear")
+    if (plural) newTransition.ease(easeLinear)
     else if (nextProps.ease != null) newTransition.ease(nextProps.ease)
 
     const enterValue = this.props.enter || this.props.enterOrExit

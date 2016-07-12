@@ -1,7 +1,7 @@
 {
   "name": "join-transition",
   "version": "1.0.3",
-  "description": "",
+  "description": "React Component for transitioning JavaScript data structures.",
   "main": "./dist/index.js",
   "scripts": {
     "build": "babel src -d dist --presets es2015 --plugins transform-react-jsx,transform-object-rest-spread",
@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "d3-array": "^1.0.0",
+    "d3-ease": "^1.0.0",
     "d3-interpolate": "^1.1.0",
     "d3-scale": "^1.0.0",
     "d3-transition": "^1.0.0",
