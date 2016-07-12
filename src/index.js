@@ -46,8 +46,10 @@ const JoinTransition = React.createClass({
     if (plural) newTransition.ease("linear")
     else if (nextProps.ease != null) newTransition.ease(nextProps.ease)
 
-    const enterFrom = typeof nextProps.enter === "function" ? nextProps.enter : d => ({ ...d, ...nextProps.enter })
-    const exitTo = typeof nextProps.exit === "function" ? nextProps.exit : d => ({ ...d, ...nextProps.exit })
+    const enterValue = this.props.enter || this.props.enterOrExit
+    const exitValue = this.props.exit || this.props.enterOrExit
+    const enterFrom = typeof enterValue === "function" ? enterValue : d => ({ ...d, ...enterValue })
+    const exitTo = typeof exitValue === "function" ? exitValue : d => ({ ...d, ...exitValue })
 
     let interpolator
     
