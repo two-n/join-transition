@@ -53,7 +53,7 @@ const JoinTransition = React.createClass({
     
     if (plural) {
       const join = datajoin(this.state.value, nextProps.value, { key: this.props.identify, enterFrom, exitTo })
-      const interpolators = zip(join.before, join.after).map(([from, to]) => nextProps.interpolate(from, to))
+      const interpolators = zip(join.before, join.after).map(([from, to]) => nextProps.interpolate(from, to, interpolate))
 
       const staggerCoefficient = 1 / (1 - (this.props.stagger || 0) / newTransition.duration())
       const staggerScale = scaleLinear().domain(this.props.orderBy ? extent(join.after, this.props.orderBy) : [0, b.length - 1])
@@ -67,7 +67,8 @@ const JoinTransition = React.createClass({
     else if (this.state.value != null || nextProps.value != null) {
       interpolator = nextProps.interpolate(
         this.state.value == null ? enterFrom(nextProps.value) : this.state.value,
-        nextProps.value == null ? exitTo(this.state.value) : nextProps.value
+        nextProps.value == null ? exitTo(this.state.value) : nextProps.value,
+        interpolate
       )
     }
     else return this.setValue(nextProps.value)
