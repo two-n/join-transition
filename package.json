@@ -1,6 +1,6 @@
 {
   "name": "join-transition",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "React Component for transitioning JavaScript data structures.",
   "main": "./dist/index.js",
   "scripts": {
