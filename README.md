@@ -1,9 +1,12 @@
-JoinTransition
---------------
+# JoinTransition
 
 React Component that wraps `d3.transition().tween(...)` with a data join mechanism inspired by d3-selection but operating on generic data structures.
 
-Sample:
+## Install
+`npm install join-transition`
+
+## Documentation
+Sample element:
 ```jsx
 <JoinTransition
   values={[value1, value2, etc]}  // *Required*
