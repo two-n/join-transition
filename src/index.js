@@ -1,51 +1,46 @@
+import { Component, PropTypes } from "react"
 import { transition } from "d3-transition"
 import { interpolate } from "d3-interpolate"
-import { scaleLinear } from "d3-scale"
-import { extent } from "d3-array"
-import { easeLinear } from "d3-ease"
-import { isEqual, zip } from "underscore"
-import React from "react"
 
 import datajoin from "./datajoin"
 
-const JoinTransition = React.createClass({
-  getDefaultProps() {
-    return {
-      interpolate,
-      enter: null,
-      exit: null,
-      orderBy: null,
-      duration: null,
-      stagger: 0,
-      ease: null,
-      shouldTransition: (a, b) => a !== b,
-    }
-  },
+const extent = (collection, accessor) => {
+  let min = Infinity, max = -Infinity
+  for (let i = 0; i < collection.length; i++) {
+    const value = accessor ? accessor(collection[i]) : collection[i]
+    if (value < min) min = value
+    if (value > max) max = value
+  }
+  return [min, max]
+}
+
+const zip = (a, b) => a.map((d, i) => [d, b[i]])
+
+class JoinTransition extends Component {
 
   render() {
-    return this.props.children(this.state.value, this.state.prevValue)
-  },
+    return this.props.children(this.state.values, this.state.prevValues)
+  }
 
-  setValue(value) {
-    this.setState({ value, prevValue: value })
-  },
+  setValues(values) {
+    this.setState({ values, prevValues: values })
+  }
 
   componentWillMount() {
-    this.setValue(this.props.value)
-  },
+    this.setValues(this.props.values)
+  }
 
   componentWillReceiveProps(nextProps) {
-    const nextValue = nextProps.value || nextProps.values
-    if (typeof this.props.shouldTransition === "function" ? !this.props.shouldTransition(this.props.value, nextProps.value) : !this.props.shouldTransition) {
-      return this.setValue(nextProps.value)
+    if (typeof this.props.shouldTransition === "function" ? !this.props.shouldTransition(this.props.values, nextProps.values) : !this.props.shouldTransition) {
+      return this.setValues(nextProps.values)
     }
 
-    const plural = Array.isArray(nextProps.value)
+    const plural = Array.isArray(nextProps.values)
 
     const newTransition = transition(`JoinTransition-${Date.now()}`)
     const defaultEase = newTransition.ease()
     if (nextProps.duration != null) newTransition.duration(nextProps.duration)
-    if (plural) newTransition.ease(easeLinear)
+    if (plural) newTransition.ease(t => +t)
     else if (nextProps.ease != null) newTransition.ease(nextProps.ease)
 
     const enterValue = this.props.enter || this.props.enterOrExit
@@ -56,13 +51,14 @@ const JoinTransition = React.createClass({
     let interpolator
     
     if (plural) {
-      const { before, after } = datajoin(this.state.value, nextProps.value, {
+      const { before, after } = datajoin(this.state.values, nextProps.values, {
         key: this.props.identify, enterFrom, exitTo
       })
       const interpolators = zip(before, after).map(([from, to]) => nextProps.interpolate(from, to, interpolate))
 
       const staggerCoefficient = 1 / (1 - (this.props.stagger || 0) / newTransition.duration())
-      const staggerScale = scaleLinear().domain(this.props.orderBy ? extent(after, this.props.orderBy) : [0, after.length - 1])
+      const staggerRange = this.props.orderBy ? extent(after, this.props.orderBy) : [0, after.length - 1]
+      const staggerScale = value => (value - staggerRange[0]) / (staggerRange[1] - staggerRange[0])
         
       interpolator = t =>
         after.map((d, i) => {
@@ -70,20 +66,51 @@ const JoinTransition = React.createClass({
           return { ...d, ...interpolators[i]((nextProps.ease != null ? nextProps.ease : defaultEase)(y)) }
         })
     }
-    else if (this.state.value != null || nextProps.value != null) {
+    else if (this.state.values != null || nextProps.values != null) {
       interpolator = nextProps.interpolate(
-        this.state.value == null ? enterFrom(nextProps.value) : this.state.value,
-        nextProps.value == null ? exitTo(this.state.value) : nextProps.value,
+        this.state.values == null ? enterFrom(nextProps.values) : this.state.values,
+        nextProps.values == null ? exitTo(this.state.values) : nextProps.values,
         interpolate
       )
     }
-    else return this.setValue(nextProps.value)
+    else return this.setValues(nextProps.values)
 
     newTransition
-      .tween("value", () => t => { this.setState({ value: interpolator(t), prevValue: this.state.value }) })
-      .on("end", () => { this.setValue(nextProps.value) })
+      .tween("values", () => t => { this.setState({ values: interpolator(t), prevValues: this.state.values }) })
+      .on("end", () => { this.setValues(nextProps.values) })
   }
 
-})
+}
 
+JoinTransition.propTypes = {
+  values: PropTypes.any.isRequired,
+
+  interpolate: PropTypes.func,
+  shouldTransition: PropTypes.func,
+  identify: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+
+  enter: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
+  exit: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
+  enterOrExit: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
+
+  duration: PropTypes.number,
+  ease: PropTypes.func,
+  stagger: PropTypes.number,
+  orderBy: PropTypes.func
+}
+
+JoinTransition.defaultProps = {
+  interpolate,
+  shouldTransition: (a, b) => a !== b,
+
+  enter: null,
+  exit: null,
+
+  duration: null,
+  ease: null,
+  stagger: 0,
+  orderBy: null,
+}
+
+// export default JoinTransition
 module.exports = JoinTransition

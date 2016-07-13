@@ -1,6 +1,6 @@
 {
   "name": "join-transition",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "React Component for transitioning JavaScript data structures.",
   "main": "./dist/index.js",
   "scripts": {
@@ -8,15 +8,11 @@
     "prepublish": "npm run build"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "d3-array": "^1.0.0",
-    "d3-ease": "^1.0.0",
     "d3-interpolate": "^1.1.0",
-    "d3-scale": "^1.0.0",
     "d3-transition": "^1.0.0",
-    "react": "^15.2.0",
-    "underscore": "^1.8.3"
+    "react": "^15"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",

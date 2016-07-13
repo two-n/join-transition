@@ -1,6 +1,6 @@
 # JoinTransition
 
-React Component that wraps `d3.transition().tween(...)` with a data join mechanism inspired by d3-selection but operating on generic data structures.
+React Component wrapping [`d3.transition().tween(...)`](https://github.com/d3/d3-transition#transition_tween) with a data join mechanism [inspired by d3-selection](https://github.com/d3/d3-selection#joining-data), operating on generic data structures.
 
 ## Install
 `npm install join-transition`
@@ -10,18 +10,19 @@ Sample element:
 ```jsx
 <JoinTransition
   values={[value1, value2, etc]}  // *Required*
-  // or: value={value}
 
-  interpolate={(a, b, interpolate) => interpolate(a, b)}  // Default. Passes d3.interpolate as final argument
+  interpolate={(a, b, interpolate) => interpolate(a, b)}  // Default. Passes [d3.interpolate](https://github.com/d3/d3-interpolate#interpolate) as final argument
   shouldTransition={(a, b) => a !== b}  // Default. Required for mutable values
 
-  identify={d => d.id}  // Default. Keys values for constancy (c.f. 2nd argument to d3-selection data method)
+  identify={d => d.id}  // Default. Keys values for constancy (c.f. key argument to [d3-selection data method](https://github.com/d3/d3-selection#selection_data))
 
   enter={d => { ...d, etc }}
   exit={d => { ...d, etc }}
   // or: enterOrExit={d => { ...d, etc }}
 
-  duration={500}  // Defaults to d3-transition default duration. Length of all values' transition (not each!)
+  duration={250}  // Defaults to d3-transition default [duration](https://github.com/d3/d3-transition#transition_duration). Length of all values' transition (not each!)
+  ease={d3.easeCubic}  // Defaults to d3-transition default [easing](https://github.com/d3/d3-transition#transition_ease)
+
   stagger={0}  // Default. Longest delay time. Must be smaller than duration
   orderBy={(d, i) => i}  // Default. Determines stagger delay time, relative to other values
 >{
