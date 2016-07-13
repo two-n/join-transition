@@ -1,13 +1,14 @@
 {
   "name": "join-transition",
-  "version": "1.0.8",
-  "description": "React Component for transitioning JavaScript data structures.",
+  "version": "1.0.9",
+  "description": "React Component for transitioning values and sets of values",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "babel src -d dist --presets es2015 --plugins transform-react-jsx,transform-object-rest-spread",
+    "test": "mocha --compilers js:babel-register",
+    "build": "babel src -d dist",
     "prepublish": "npm run build"
   },
-  "author": "",
+  "author": "Paul Dechov (paul@two-n.com)",
   "license": "MIT",
   "dependencies": {
     "d3-interpolate": "^1.1.0",
@@ -18,6 +19,18 @@
     "babel-cli": "^6.10.1",
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-plugin-transform-react-jsx": "^6.8.0",
-    "babel-preset-es2015": "^6.9.0"
+    "babel-preset-es2015": "^6.9.0",
+    "babel-register": "^6.9.0",
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "transform-react-jsx",
+      "transform-object-rest-spread"
+    ]
   }
 }

@@ -4,6 +4,7 @@ import { interpolate } from "d3-interpolate"
 
 import datajoin from "./datajoin"
 
+
 const extent = (collection, accessor) => {
   let min = Infinity, max = -Infinity
   for (let i = 0; i < collection.length; i++) {
@@ -16,8 +17,8 @@ const extent = (collection, accessor) => {
 
 const zip = (a, b) => a.map((d, i) => [d, b[i]])
 
-class JoinTransition extends Component {
 
+class JoinTransition extends Component {
   render() {
     return this.props.children(this.state.values, this.state.prevValues)
   }
@@ -62,8 +63,10 @@ class JoinTransition extends Component {
         
       interpolator = t =>
         after.map((d, i) => {
-          const y = Math.min(1, Math.max(0, t * staggerCoefficient + (1 - staggerCoefficient) * staggerScale(this.props.orderBy != null ? this.props.orderBy(d, i) : i)))
-          return { ...d, ...interpolators[i]((nextProps.ease != null ? nextProps.ease : defaultEase)(y)) }
+          const staggerValue = this.props.orderBy != null ? this.props.orderBy(d, i) : i
+          const t_i = staggerCoefficient * t + (1 - staggerCoefficient) * staggerScale(staggerValue)
+          const ease = nextProps.ease != null ? nextProps.ease : defaultEase
+          return { ...d, ...interpolators[i](ease(Math.min(1, Math.max(0, t_i)))) }
         })
     }
     else if (this.state.values != null || nextProps.values != null) {
@@ -76,7 +79,9 @@ class JoinTransition extends Component {
     else return this.setValues(nextProps.values)
 
     newTransition
-      .tween("values", () => t => { this.setState({ values: interpolator(t), prevValues: this.state.values }) })
+      .tween("values", () => t => {
+        this.setState({ values: interpolator(t), prevValues: this.state.values })
+      })
       .on("end", () => { this.setValues(nextProps.values) })
   }
 
@@ -96,7 +101,7 @@ JoinTransition.propTypes = {
   duration: PropTypes.number,
   ease: PropTypes.func,
   stagger: PropTypes.number,
-  orderBy: PropTypes.func
+  orderBy: PropTypes.func,
 }
 
 JoinTransition.defaultProps = {

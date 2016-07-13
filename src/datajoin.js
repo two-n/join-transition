@@ -1,6 +1,10 @@
 
 const groupBy = (collection, accessor) => {
   const byValue = {}
+  if (accessor != null && typeof accessor !== "function") {
+    const key = accessor
+    accessor = d => d[key]
+  }
   for (let i = 0; i < collection.length; i++) {
     const value = accessor ? accessor(collection[i]) : collection[i]
     byValue[value] = (byValue[value] || []).concat(collection[i])
