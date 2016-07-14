@@ -53,7 +53,7 @@ class JoinTransition extends Component {
     
     if (plural) {
       const { before, after } = datajoin(this.state.values, nextProps.values, {
-        key: this.props.identify, enterFrom, exitTo
+        key: nextProps.identify, enterFrom, exitTo
       })
       const interpolators = zip(before, after).map(([from, to]) => nextProps.interpolate(from, to, interpolate))
 
@@ -107,7 +107,7 @@ JoinTransition.propTypes = {
 JoinTransition.defaultProps = {
   interpolate,
   shouldTransition: (a, b) => a !== b,
-
+  identify: "id",
   enter: null,
   exit: null,
 

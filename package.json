@@ -1,6 +1,6 @@
 {
   "name": "join-transition",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "React Component for transitioning values and sets of values",
   "main": "./dist/index.js",
   "scripts": {
@@ -11,9 +11,9 @@
   "author": "Paul Dechov (paul@two-n.com)",
   "license": "MIT",
   "dependencies": {
-    "d3-interpolate": "^1.1.0",
-    "d3-transition": "^1.0.0",
-    "react": "^15"
+    "d3-interpolate": "1",
+    "d3-transition": "1",
+    "react": "15"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",

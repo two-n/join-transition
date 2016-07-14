@@ -17,9 +17,12 @@ describe('datajoin', () => {
       ]
     )
     assert.equal(before, [
+      // Exiting
       {id: 0, value: 10},
       {id: 1, value: 10},
       {id: 3, value: 10},
+
+      // Updating
       {id: 2, value: 10},
       {id: 4, value: 30},
     ])

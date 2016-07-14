@@ -13,24 +13,20 @@ const groupBy = (collection, accessor) => {
 }
 
 export default (A=[], B=[], options={}) => {
-  options = Object.assign({
-    key: "id",
-    exitTo: Object,
-    enterFrom: Object,
-    keyTo: null,
-    keyFrom: null,
-  }, options)
 
-  const keyTo = options.keyTo != null ? options.keyTo : options.key,
-        keyFrom = options.keyFrom != null ? options.keyFrom : options.key
+  const key = options.key != null ? options.key : "id",
+        keyTo = options.keyTo != null ? options.keyTo : key,
+        keyToFn = typeof options.keyTo === "function" ? keyTo : d => d[keyTo],
+        keyFrom = options.keyFrom != null ? options.keyFrom : key,
+        keyFromFn = typeof options.keyFrom === "function" ? keyFrom : d => d[keyFrom]
 
   const groupA = groupBy(A, keyTo),
         groupB = groupBy(B, keyFrom),
-        exit = A.filter(a => groupB[a[keyTo]] == null),
-        enter = B.filter(b => groupA[b[keyFrom]] == null)
+        exit = A.filter(a => groupB[keyToFn(a)] == null),
+        enter = B.filter(b => groupA[keyFromFn(b)] == null)
 
   let updating = [], updatedFrom = [],
-      updated = B.filter(b => groupA[b[keyFrom]] != null)
+      updated = B.filter(b => groupA[keyFromFn(b)] != null)
 
   for (let bIndex = 0; bIndex < updated.length; bIndex++) {
     const b = updated[bIndex],
@@ -43,8 +39,10 @@ export default (A=[], B=[], options={}) => {
   }
   updated = updatedFrom
 
-  const before = exit.concat(updating).concat(enter.map(options.enterFrom))
-  const after = (exit.map(options.exitTo)).concat(updated).concat(enter)
+  const exitTo = options.exitTo != null ? options.exitTo : Object,
+        enterFrom = options.enterFrom != null ? options.enterFrom : Object,
+        before = exit.concat(updating).concat(enter.map(enterFrom)),
+        after = (exit.map(exitTo)).concat(updated).concat(enter)
 
   return { before, after, exit, updating, updated, enter }
 }

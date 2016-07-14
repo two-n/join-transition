@@ -33,9 +33,9 @@ Defaults to d3-transition default [easing](https://github.com/d3/d3-transition#t
 ### Props applicable for transitioning sets (i.e. arrays)
 
 ```jsx
-  identify={d => d.id}
+  identify="id"
 ```
-Default. Keys for constancy (c.f. *key* argument to [d3-selection data method](https://github.com/d3/d3-selection#selection_data))
+Default. String or function. Key for constancy (c.f. *key* argument to [d3-selection data method](https://github.com/d3/d3-selection#selection_data))
 ```jsx
   enter={d => { ...d, etc }}
   exit={d => { ...d, etc }}
@@ -61,7 +61,7 @@ Default. Determines stagger delay time (relative to other values).
     <g>{transitioningValues.map(value => <circle {...value} />)}</g>  // ... for example
 }
 ```
-**Required**. Child must be a function that renders the array of transitioning values (including those entering, updating, and exiting).
+**Required**. Child must be a function that renders the array of transitioning values (in order of: exiting, updating, entering).
 
 ```jsx
 </JoinTransition>
