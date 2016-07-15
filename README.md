@@ -19,6 +19,11 @@ Default. Expect [d3.interpolate](https://github.com/d3/d3-interpolate#interpolat
 ```
 Default. (Effectively required for mutated values.)
 
+```
+  queue={false}
+```
+Default. Set to true to schedule when transition in progress ends.
+
 ```jsx
   duration={250}
 ```

@@ -17,6 +17,8 @@ const extent = (collection, accessor) => {
 
 const zip = (a, b) => a.map((d, i) => [d, b[i]])
 
+let nextId = 0
+
 
 class JoinTransition extends Component {
   render() {
@@ -29,6 +31,7 @@ class JoinTransition extends Component {
 
   componentWillMount() {
     this.setValues(this.props.values)
+    this.id = nextId++
   }
 
   componentWillReceiveProps(nextProps) {
@@ -38,11 +41,17 @@ class JoinTransition extends Component {
 
     const plural = Array.isArray(nextProps.values)
 
-    const newTransition = transition(`JoinTransition-${Date.now()}`)
-    const defaultEase = newTransition.ease()
-    if (nextProps.duration != null) newTransition.duration(nextProps.duration)
-    if (plural) newTransition.ease(t => +t)
-    else if (nextProps.ease != null) newTransition.ease(nextProps.ease)
+    this.transition =
+      this.transition == null
+        ? transition(`JoinTransition-${this.id}`)
+        : nextProps.queue
+          ? this.transition.transition()
+          : transition(this.transition)
+
+    const defaultEase = this.transition.ease()
+    if (nextProps.duration != null) this.transition.duration(nextProps.duration)
+    if (plural) this.transition.ease(t => +t)
+    else if (nextProps.ease != null) this.transition.ease(nextProps.ease)
 
     const enterValue = this.props.enter || this.props.enterOrExit
     const exitValue = this.props.exit || this.props.enterOrExit
@@ -57,7 +66,7 @@ class JoinTransition extends Component {
       })
       const interpolators = zip(before, after).map(([from, to]) => nextProps.interpolate(from, to, interpolate))
 
-      const staggerCoefficient = 1 / (1 - (this.props.stagger || 0) / newTransition.duration())
+      const staggerCoefficient = 1 / (1 - (this.props.stagger || 0) / this.transition.duration())
       const staggerRange = this.props.orderBy ? extent(after, this.props.orderBy) : [0, after.length - 1]
       const staggerScale = value => (value - staggerRange[0]) / (staggerRange[1] - staggerRange[0])
         
@@ -78,28 +87,32 @@ class JoinTransition extends Component {
     }
     else return this.setValues(nextProps.values)
 
-    newTransition
+    this.transition
       .tween("values", () => t => {
         this.setState({ values: interpolator(t), prevValues: this.state.values })
       })
-      .on("end", () => { this.setValues(nextProps.values) })
+      .on("end", () => {
+        this.setValues(nextProps.values)
+        this.transition = null
+      })
   }
 
 }
 
 JoinTransition.propTypes = {
   values: PropTypes.any.isRequired,
+  children: PropTypes.func.isRequired,
 
   interpolate: PropTypes.func,
   shouldTransition: PropTypes.func,
-  identify: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  queue: PropTypes.bool,
+  duration: PropTypes.number,
+  ease: PropTypes.func,
 
+  identify: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   enter: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   exit: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   enterOrExit: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
-
-  duration: PropTypes.number,
-  ease: PropTypes.func,
   stagger: PropTypes.number,
   orderBy: PropTypes.func,
 }
@@ -107,12 +120,13 @@ JoinTransition.propTypes = {
 JoinTransition.defaultProps = {
   interpolate,
   shouldTransition: (a, b) => a !== b,
+  queue: false,
+  duration: null,
+  ease: null,
+
   identify: "id",
   enter: null,
   exit: null,
-
-  duration: null,
-  ease: null,
   stagger: 0,
   orderBy: null,
 }
