@@ -31,7 +31,7 @@ Default. (Effectively required for mutated values.)
 ```jsx
   queue={false}
 ```
-Default. Set to true to schedule when transition in progress ends.
+Default. If the previous transition is still in progress, `queue={true}` will wait for it to end, rather than interrupting.
 
 * **duration**
 ```jsx
@@ -78,10 +78,12 @@ To transition values one after another, `import { staggerInSeries } from 'join-t
 * **orderBy**
 ```jsx
   orderBy={(d, i) => i}
->
 ```
 Default. Determines stagger delay time (relative to other values).
 
+```jsx
+>
+```
 
 ### Render
 
