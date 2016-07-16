@@ -34,6 +34,10 @@ Defaults to d3-transition default [duration](https://github.com/d3/d3-transition
 ```
 Defaults to d3-transition default [easing](https://github.com/d3/d3-transition#transition_ease).
 
+```jsx
+  onTransitionEnd={null}
+```
+
 
 ### Props applicable for transitioning sets (i.e. arrays)
 
@@ -51,7 +55,10 @@ Values to transition from/to when entering/exiting.
 ```jsx
   stagger={0}
 ```
-Default. Longest delay time (ms). Must be less than `duration`.
+Default. (0 <= stagger < 1). As a proportion of the duration, values' delays range from 0 to this value.
+
+For values to transition one after another, `import { staggerInSeries } from 'join-transition'` and `stagger={staggerInSeries()}`. Optionally pass a fractional overlap amount (defaults to 0).
+
 ```jsx
   orderBy={(d, i) => i}
 >
@@ -66,7 +73,7 @@ Default. Determines stagger delay time (relative to other values).
     <g>{transitioningValues.map(value => <circle {...value} />)}</g>  // ... for example
 }
 ```
-**Required**. Child must be a function that renders the array of transitioning values (in order of: exiting, updating, entering).
+**Required**. Child must be a function that renders the array of transitioning values, which is a union of previous and current `values` in order of: exiting, updating, entering.
 
 ```jsx
 </JoinTransition>
