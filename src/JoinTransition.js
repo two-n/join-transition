@@ -42,11 +42,9 @@ class JoinTransition extends Component {
     const plural = Array.isArray(props.values)
 
     this.transition =
-      this.transition == null
+      !props.queue || !this.transition
         ? transition(`JoinTransition-${this.id}`)
-        : props.queue
-          ? this.transition.transition()
-          : transition(this.transition)
+        : this.transition.transition()
 
     const defaultEase = this.transition.ease()
     if (props.duration != null) this.transition.duration(props.duration)
