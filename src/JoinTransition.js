@@ -88,6 +88,7 @@ class JoinTransition extends Component {
     }
     else return this.setValues(props.values)
 
+    this.setState({ values: interpolator(0), prevValues: this.state.values })
     this.transition
       .tween("values", () => t => {
         this.setState({ values: interpolator(t), prevValues: this.state.values })
