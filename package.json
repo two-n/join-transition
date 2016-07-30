@@ -1,7 +1,7 @@
 {
   "name": "join-transition",
-  "version": "1.0.14",
-  "description": "React Component for transitioning values and sets of values",
+  "version": "1.0.15",
+  "description": "React component for transitioning values and sets of values",
   "main": "./dist/index.js",
   "scripts": {
     "test": "mocha --compilers js:babel-register",

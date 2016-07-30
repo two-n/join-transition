@@ -5,7 +5,7 @@ import JoinTransition from 'join-transition'
 
 <JoinTransition
 ```
-React Component wrapping [`d3.transition().tween(...)`](https://github.com/d3/d3-transition#transition_tween) with a data join mechanism [inspired by d3-selection](https://github.com/d3/d3-selection#joining-data) but operating on generic data structures. `npm install join-transition`
+React component wrapping [`d3.transition().tween(...)`](https://github.com/d3/d3-transition#transition_tween) with a data join mechanism [inspired by d3-selection](https://github.com/d3/d3-selection#joining-data) but operating on generic data structures. `npm install join-transition`
 
 * **values**
 ```jsx

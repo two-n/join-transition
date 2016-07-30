@@ -67,7 +67,8 @@ class JoinTransition extends Component {
       const staggerAmount = typeof props.stagger === "function" ? props.stagger(before, after) : props.stagger,
             staggerCoefficient = 1 / (1 - staggerAmount),
             staggerRange = props.orderBy ? extent(after, props.orderBy) : [0, after.length - 1],
-            staggerScale = value => (value - staggerRange[0]) / (staggerRange[1] - staggerRange[0])
+            staggerRangeSize = staggerRange[1] - staggerRange[0],
+            staggerScale = staggerRangeSize === 0 ? () => 0 : value => (value - staggerRange[0]) / staggerRangeSize
         
       interpolator = t =>
         after.map((d, i) => {
